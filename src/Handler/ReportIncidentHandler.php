@@ -266,6 +266,12 @@ class ReportIncidentHandler implements Handler
 
     private function saveDetails()
     {
+        $incidentDateTimePickers = array(
+            'ar_AR' => 'https://v2.hmfbbot.mtantawy.com/public/incident_time.htm',
+            'en_US' => 'https://v2.hmfbbot.mtantawy.com/public/incident_time_en.htm',
+            'en' => 'https://v2.hmfbbot.mtantawy.com/public/incident_time_en.htm'
+        );
+
         $user = $this->userService->getUserByFacebookPSID($this->event->getSenderId());
         $report = $this->reportService->getInProgressReportByUser($user->getId());
 
@@ -275,7 +281,9 @@ class ReportIncidentHandler implements Handler
             $report
         );
 
-        $webUrl = new WebUrl('إدخل الوقت و التاريخ', 'https://v2.hmfbbot.mtantawy.com/public/datetimepicker.htm?ids=' . json_encode(['user_id' => $user->getId(), 'report_id' => $report->getId()]));
+        $language = $user->getPreferredLanguage();
+
+        $webUrl = new WebUrl('إدخل الوقت و التاريخ', $incidentDateTimePickers[$language] . '?ids=' . json_encode(['user_id' => $user->getId(), 'report_id' => $report->getId()]));
         $webUrl->setWebviewHeightRatio(WebUrl::HEIGHT_RATIO_COMPACT);
 
         $elements = [
